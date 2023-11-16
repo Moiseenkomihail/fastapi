@@ -7,3 +7,6 @@ DB_USER='postgres'
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 DATABASE_ECHO = True
 
+SECRET_KEY = 'exemple'
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
+ALGORITHM = "HS256"

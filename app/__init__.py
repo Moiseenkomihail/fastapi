@@ -1,10 +1,10 @@
 __all__ = (
     'User',
-    'Tracker',
+    'Track',
 )
 
 
-from app.models.tracker import Tracker
+from app.models.track import Track
 from app.models.users import User
 import app.database.DBmodel
 import app.database.db

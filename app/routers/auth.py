@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +11,7 @@ from app.services.jwt import create_access_token
 from app.services.security import verify_password
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
 
-auth_router = APIRouter(tags=['Auth'], prefix='/login')
+auth_router = APIRouter()
 
 @auth_router.post(
     '/'
@@ -24,13 +24,21 @@ async def auth_user(
 
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username",
+        )
     
     if  not verify_password(plain_password=auth_model.password, hashed_password=user.password):
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
-    
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password",
+        )
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={'id': user.id}, expires_delta=access_token_expires)
+    access_token = await create_access_token(
+        data={'user_id': user.id}, expires_delta=access_token_expires
+        )
     
-    return {'acces_token': access_token, 'token_type': 'bearer'}
+    return {'access_token': access_token, 'token_type': 'bearer'}
+
+

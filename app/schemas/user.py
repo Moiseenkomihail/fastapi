@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class UserBase(BaseModel):
-    pass
+    id: int
 
 class UserCreate(BaseModel):
     password: str
@@ -15,10 +15,9 @@ class UserUpdate(BaseModel):
     fullname: str
     nickname: str
 
-class UserShow(BaseModel):
+class UserShow(UserBase):
     fullname: Optional[str] = None
-    id: int
     username:str
 
-class UserDelete(BaseModel):
-    id: int
+class UserDelete(UserBase):
+    pass

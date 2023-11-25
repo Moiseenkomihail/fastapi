@@ -6,6 +6,7 @@ from app.database.db import get_session
 from app.models.users import User
 from app.schemas.user import UserCreate
 from app.services.auth import user_by_name
+from app.services.registrate import create_new_user
 from app.services.security import get_password_hash
 
 
@@ -25,11 +26,6 @@ async def create_user(
             detail="there is already a user with the same name"
         )
     
-    hashpassword = get_password_hash(user_model.password)
-    user_model.password = hashpassword
+    result = await create_new_user(user_in= user_model, session= session)
 
-    user = User(**user_model.model_dump())
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-    return status.HTTP_201_CREATED
+    return result

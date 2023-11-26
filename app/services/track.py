@@ -1,8 +1,7 @@
-from typing import Any, Iterator, Sequence
 from fastapi import HTTPException, status
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select,update
 
 from app.models.track import Track
 
@@ -25,12 +24,11 @@ async def create_new_track(session: AsyncSession, track_in: TrackCreate, user_id
             detail='cant to create track'
         )
 
-async def get_tracks(session: AsyncSession, user_id: int, track_name: str):
+async def get_track(session: AsyncSession, user_id: int, track_name: str):
 
     query = select(Track).where(Track.user_id == user_id, Track.name == track_name)
 
     try:
-        print('1')
         res = await session.execute(query)
         await session.commit()
         track = res.fetchone()
@@ -40,6 +38,39 @@ async def get_tracks(session: AsyncSession, user_id: int, track_name: str):
     except:
         raise HTTPException(
             status_code=400,
-            detail='cant to execute track'
+            detail='cant to find track'
         )
+    
+async def get_tracks(session: AsyncSession, user_id: int):
 
+    query = select(Track).where(Track.user_id == user_id)
+
+    try:
+        res = await session.execute(query)
+        await session.commit()
+        tracks = res.scalars().all()
+        print(tracks)
+        return tracks
+    
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail='cant to find tracks'
+        )
+    
+
+async def add_time_to_track(session: AsyncSession, track_id:int, time:int, user_id):
+    
+    query = select(Track).where(Track.user_id == user_id, Track.id == track_id)
+
+    try:
+        track = await session.scalar(query)
+        track.total_time = track.total_time + time
+        await session.commit()
+        return track
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail='cant find track'
+       )
+    pass

@@ -7,3 +7,4 @@ class TrackBase(BaseModel):
 
 class TrackCreate(TrackBase):
     description: str
+

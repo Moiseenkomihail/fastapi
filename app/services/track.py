@@ -16,7 +16,7 @@ async def create_new_track(session: AsyncSession, track_in: TrackCreate, user_id
         session.add(track)
         await session.commit()
         await session.refresh(track)
-        return status.HTTP_201_CREATED
+        return track
     
     except:
         raise HTTPException(
@@ -26,7 +26,7 @@ async def create_new_track(session: AsyncSession, track_in: TrackCreate, user_id
 
 async def get_track(session: AsyncSession, user_id: int, track_name: str):
 
-    query = select(Track).where(Track.user_id == user_id, Track.name == track_name)
+    query = select(Track).where(Track.user_id == user_id, Track.name == track_name, Track.is_active == True)
 
     try:
         res = await session.execute(query)
@@ -38,12 +38,12 @@ async def get_track(session: AsyncSession, user_id: int, track_name: str):
     except:
         raise HTTPException(
             status_code=400,
-            detail='cant to find track'
+            detail='server erorr'
         )
     
 async def get_tracks(session: AsyncSession, user_id: int):
 
-    query = select(Track).where(Track.user_id == user_id)
+    query = select(Track).where(Track.user_id == user_id, Track.is_active == True)
 
     try:
         res = await session.execute(query)
@@ -55,22 +55,39 @@ async def get_tracks(session: AsyncSession, user_id: int):
     except:
         raise HTTPException(
             status_code=400,
-            detail='cant to find tracks'
+            detail='server erorr'
         )
     
 
 async def add_time_to_track(session: AsyncSession, track_id:int, time:int, user_id):
     
-    query = select(Track).where(Track.user_id == user_id, Track.id == track_id)
+    query = select(Track).where(Track.user_id == user_id, Track.id == track_id, Track.is_active == True)
 
     try:
-        track = await session.scalar(query)
+        res = await session.execute(query)
+        track = res.scalar_one()
         track.total_time = track.total_time + time
+        resp = track.__dict__
         await session.commit()
-        return track
-    except:
+        return resp
+    except: 
         raise HTTPException(
             status_code=400,
-            detail='cant find track'
+            detail='server erorr'
        )
-    pass
+    
+async def disable_track(session: AsyncSession, track_id:int, user_id):
+    
+    query = select(Track).where(Track.user_id == user_id, Track.id == track_id, Track.is_active == True)
+
+    try:
+        res = await session.execute(query)
+        track = res.scalar_one()
+        track.is_active = False
+        await session.commit()
+        return status.HTTP_200_OK
+    except: 
+        raise HTTPException(
+            status_code=400,
+            detail='server erorr'
+       )

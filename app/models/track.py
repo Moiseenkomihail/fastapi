@@ -12,6 +12,7 @@ class Track(Base):
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
     total_time: Mapped[int] = mapped_column(default= 0)
+    is_active: Mapped[bool] = mapped_column(default= True, nullable=False)
 
     user_id: Mapped[int] = mapped_column(
         ForeignKey('users.id')

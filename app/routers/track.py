@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_session
 from app.schemas.track import TrackCreate
-from app.services.track import create_new_track, get_track, get_tracks, add_time_to_track
+from app.services.track import create_new_track, disable_track, get_track, get_tracks, add_time_to_track
 from app.services.jwt import get_current_user, get_current_userid
 
 track_router = APIRouter(tags =['Tracks'], prefix='/track')
@@ -42,7 +42,7 @@ async def get_user_tracks(
 
 
 @track_router.put(
-    '/'
+    '/add_time'
 )
 async def add_time(
     track_id: int,
@@ -50,5 +50,16 @@ async def add_time(
     session: AsyncSession = Depends(get_session),
     user_id= Depends(get_current_userid),
 ):
-    
-    return await add_time_to_track(track_id=track_id, time=time,session=session, user_id=user_id)
+    res = await add_time_to_track(track_id=track_id, time=time,session=session, user_id=user_id)
+    return res
+
+@track_router.put(
+    '/disable_tack'
+)
+async def disable(
+    track_id: int,
+    session: AsyncSession = Depends(get_session),
+    user_id= Depends(get_current_userid),
+):
+    res = await disable_track(track_id=track_id,session=session, user_id=user_id)
+    return res

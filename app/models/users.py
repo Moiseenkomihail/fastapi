@@ -9,7 +9,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True,)
-    # mail: Mapped[str] = mapped_column(unique=True)
+    mail: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 

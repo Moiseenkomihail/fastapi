@@ -8,12 +8,6 @@ engine = create_async_engine(
             echo=DATABASE_ECHO,
 )
 
-# async_session= async_sessionmaker(
-#             bind=engine,
-#             autoflush=False,
-#             autocommit=False,
-#             expire_on_commit=False,
-# )
 
 async_session = async_sessionmaker(
         bind=engine,

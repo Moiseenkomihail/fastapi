@@ -1,10 +1,7 @@
-import re
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from fastapi import Depends
 
-from app.database.db import get_session
 from app.models.users import User
 
 

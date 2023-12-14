@@ -66,3 +66,10 @@ zipp = "==3.17.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "app",
+]
+asyncio_mode ="auto"

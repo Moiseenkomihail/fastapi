@@ -24,7 +24,24 @@ async def create_new_track(session: AsyncSession, track_in: TrackCreate, user_id
             detail='cant to create track'
         )
 
-async def get_track(session: AsyncSession, user_id: int, track_name: str):
+async def get_tracks(session: AsyncSession, user_id: int):
+
+    query = select(Track).where(Track.user_id == user_id, Track.is_active == True)
+
+    try:
+        res = await session.execute(query)
+        await session.commit()
+        tracks = res.scalars().all()
+        print(tracks)
+        return tracks
+    
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail='server erorr'
+        )
+
+async def get_track_by_name(session: AsyncSession, user_id: int, track_name: str):
 
     query = select(Track).where(Track.user_id == user_id, Track.name == track_name, Track.is_active == True)
 
@@ -41,17 +58,36 @@ async def get_track(session: AsyncSession, user_id: int, track_name: str):
             detail='server erorr'
         )
     
-async def get_tracks(session: AsyncSession, user_id: int):
 
-    query = select(Track).where(Track.user_id == user_id, Track.is_active == True)
+async def get_track_by_id(session: AsyncSession, user_id: int, track_id: int):
+
+    query = select(Track).where(Track.user_id == user_id, Track.id == track_id, Track.is_active == True)
 
     try:
         res = await session.execute(query)
         await session.commit()
-        tracks = res.scalars().all()
-        print(tracks)
-        return tracks
+        track = res.fetchone()
+        if track:
+            return track[0]
     
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail='server erorr'
+        )
+
+    
+async def get_track(session: AsyncSession, user_id: int, track_id: int):
+
+    query = select(Track).where(Track.user_id == user_id, Track.is_active == True, Track.id == track_id)
+
+    try:
+            res = await session.execute(query)
+            await session.commit()
+            track = res.fetchone()
+            if track:
+                return track[0]
+        
     except:
         raise HTTPException(
             status_code=400,

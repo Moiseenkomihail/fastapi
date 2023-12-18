@@ -29,6 +29,7 @@ async def test_create_user_same_email(ac: AsyncClient):
     
     assert response.status_code == 400
 
+
 async def test_auth_user_byname(ac: AsyncClient):
     response = await ac.post('/login/', data={
                 "username": "string", "password": "string", "grant_type": "password"},
@@ -36,18 +37,12 @@ async def test_auth_user_byname(ac: AsyncClient):
 
     assert response.status_code == 200
 
-refresh_token = ''
-access_token = ''
 
 async def test_auth_user_byemail(ac: AsyncClient):
     response = await ac.post('/login/', data={
                 "username": "some@gmail.com", "password": "string", "grant_type": "password"},
                 headers={"content-type": "application/x-www-form-urlencoded"})
-    str = response.text
-    data = json.loads(str)
-    refresh_token = data["refresh_token"]
-    access_token = data["access_token"]
-        
+
     assert response.status_code == 200
 
 
@@ -71,3 +66,5 @@ async def test_refreshtoken(ac: AsyncClient):
     response = await ac.post('/login/refreshtoken')
 
     assert response.status_code == 200
+
+

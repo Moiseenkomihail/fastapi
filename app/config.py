@@ -1,13 +1,19 @@
-DB_HOST='127.0.0.1'
-DB_PORT='5432'
-DB_NAME='FastapiAsync'
-DB_PASS='postgres'
-DB_USER='postgres'
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+DB_HOST= os.environ.get('DB_HOST')
+DB_PORT= os.environ.get('DB_PORT')
+DB_NAME= os.environ.get('DB_NAME')
+DB_PASS= os.environ.get('DB_PASS')
+DB_USER= os.environ.get('DB_USER')
 
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 DATABASE_ECHO = True
 
-SECRET_KEY = '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_MINUTES = 60*24*14
 ALGORITHM = "HS256"
